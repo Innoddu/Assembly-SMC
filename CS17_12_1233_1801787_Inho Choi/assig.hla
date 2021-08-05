@@ -1,0 +1,91 @@
+// File: assig
+program assig;
+#include( "stdlib.hhf" );
+static
+
+    x : real32;
+    y : real32;
+
+procedure surfaceFinder( r: real32; h : real32 ); @nodisplay; @noframe; 
+
+static
+iReturnAddress : dword;
+Sphere : real32;
+Cube : real32;
+Cylinder : real32;
+
+
+begin surfaceFinder;
+pop( iReturnAddress );
+pop( h );
+pop( r );
+push( iReturnAddress );
+
+// Sphere
+finit();
+fld( r );
+fld( st0 );
+fmul();
+fldpi();
+fmul();
+fld(4.0);
+fld( st1 );
+fmul();
+fstp( Sphere );
+stdout.put( "Surface Area of a sphere = " );
+stdout.putr32(Sphere, 10 , 5);
+stdout.put( "  square inches" );
+stdout.put( nl );
+
+// Cube
+finit();
+fld( h );
+fld( st0 );
+fmul();
+fld(6.0);
+fld( st1 );
+fmul();
+fstp( Cube );
+stdout.put( "Surface Area of a Cube = " );
+stdout.putr32(Cube, 10 , 5);
+stdout.put( "  square inches" );
+stdout.put( nl );
+
+
+// Cylinder
+finit();
+fld( 2.0 );
+fld( st0 );
+fldpi();
+fmul();
+fld( r );
+fld( st1 );
+fmul();
+fld( r );
+fld( st1 );
+fld( h );
+fld( st2 );
+fadd();
+fmul();
+fstp( Cylinder );
+stdout.put( "Surface Area of a Cylinder = " );
+stdout.putr32(Cylinder, 10 , 5);
+stdout.put( "  square inches" );
+stdout.put( nl );
+
+ret();
+end surfaceFinder;
+
+begin assig;
+  
+    stdout.put( "Lemme calculate the surface area of various things in inches!" nl);
+	stdout.put( "Gimme r:" );
+	stdin.get( x );
+	stdout.put( "Gimme h:" );
+	stdin.get( y );
+	push( x );
+	push( y );
+	call surfaceFinder; 
+	
+
+end assig;
