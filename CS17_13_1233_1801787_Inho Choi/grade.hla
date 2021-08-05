@@ -1,0 +1,132 @@
+// File: grade
+program grade;
+#include( "stdlib.hhf" );
+
+static
+
+x : real32;
+
+// Function
+procedure grader( percentage : real32 ); @nodisplay; @noframe;
+static
+iReturnAddress : dword;
+MAX : real32 := 100.0;
+A : real32 := 90.0;
+B : real32 := 89.99; 
+C : real32 := 79.99;
+D : real32 := 69.99;
+F : real32 := 59.99;
+cBigA : byte := $41;
+cBigB : byte := $42;
+cBigC : byte := $43;
+cBigD : byte := $44;
+cBigF : byte := $46;
+
+begin grader;
+
+	pop( iReturnAddress );
+	pop( percentage );
+	push( iReturnAddress );
+	
+	finit();
+	fld( MAX ); 
+	fld( percentage ); 
+	fcomp();
+	fstsw( ax );
+	sahf( ); 
+	setb( al ); 
+	cmp( al, 1);
+	je gradeA;
+	jmp error;
+error:
+	stdout.put( "You should type less than 100 ",nl );
+	jmp theend;
+
+gradeA:
+	finit();
+	fld( percentage ); 
+	fld( B ); 
+	fcomp();
+	fstsw( ax );
+	sahf( ); 
+	setb( al ); 
+	cmp( al, 1);
+	je gradeA2;
+	jmp gradeB;
+gradeA2:
+	//stdout.put( "that's the grade: A ",nl );
+	mov(cBigA,AL);
+	jmp theend;
+gradeB:
+	finit();
+	fld( percentage); 
+	fld( C ); 
+	fcomp();
+	fstsw( ax );
+	sahf( ); 
+	setb( al ); 
+	cmp( al, 1);
+	je gradeB2;
+	jmp gradeC;
+gradeB2:
+	mov(cBigB,AL);
+	jmp theend;
+gradeC:
+	finit();
+	fld( percentage ); 
+	fld( D ); 
+	fcomp();
+	fstsw( ax );
+	sahf( ); 
+	setb( al ); 
+	cmp( al, 1);
+	je gradeC2;
+	jmp gradeD;
+gradeC2:
+	//stdout.put( "that's the grade: C ",nl );
+	//jmp theend;
+	mov(cBigC,AL);
+	jmp theend;
+gradeD:
+	finit();
+	fld( percentage ); 
+	fld( F ); 
+	fcomp();
+	fstsw( ax );
+	sahf( ); 
+	setb( al ); 
+	cmp( al, 1);
+	je gradeD2;
+	jmp gradeF;
+gradeD2:
+	//stdout.put( "that's the grade: D ",nl );
+	//jmp theend;
+	mov(cBigD,AL);
+	jmp theend;
+gradeF:
+	//stdout.put( "that's the grade: F ",nl );
+	//jmp theend;
+	mov(cBigF,AL);
+	jmp theend;
+	
+
+theend:
+ret();
+end grader;
+
+
+
+// Main
+begin grade;
+
+stdout.put( "Feed Me: " );
+stdin.get( x );
+push( x );
+call grader;
+stdout.put( "that's the grade:  " );
+stdout.putc( AL);
+stdout.put( nl );
+
+
+
+end grade;
