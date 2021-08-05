@@ -1,0 +1,115 @@
+// File: assig
+program assig;
+#include( "stdlib.hhf" );
+static
+iValue1 : int16 := 0;
+iValue2 : int16 := 0;
+iValue3 : int16 := 0;
+iValue4 : int16 := 0;
+n : int8 := 0;
+
+procedure max( w: int16; x : int16;  y : int16; z : int16 ); @nodisplay; @noframe;
+static
+iReturnAddress : dword;
+iMax : int8;
+begin max;
+
+
+pop( iReturnAddress );
+pop( z );
+pop( y );
+pop( x );
+pop( w );
+push( iReturnAddress );
+
+
+// COMPARE 1
+
+// compare w to x
+mov( w, BX );
+push(BX);
+pop(BX);
+cmp( x, BX );
+push(BX);
+je SameWX;
+jmp Comp;
+
+
+// compare x to y
+SameWX:
+inc(n);
+pop(BX);
+cmp( y, BX );
+push(BX);
+je SameXY;
+jmp Comp;
+
+// compare y to z
+SameXY:
+inc(n);
+pop(BX);
+cmp( z, BX );
+push(BX);
+je SameYZ;
+jmp Comp;
+
+SameYZ:
+inc(n);
+jmp Comp;
+
+
+// COMPARE 2
+Comp:
+Pop(BX);
+sub( 3, n );
+cmp( n, 0 );
+je ReturnTrue;
+jmp ExitSequence;
+
+cmp( n, 0 );
+jle ReturnFalse;
+jmp ExitSequence;
+
+ReturnTrue:
+mov( 1, iMax );
+jmp ExitSequence;
+
+ReturnFalse:
+mov( 0, iMax );		
+jmp ExitSequence;
+
+
+ExitSequence:
+mov( iMax, AL );
+ret();
+end max;
+
+begin assig;
+stdout.put( "Feed Me W: " );
+stdin.get( iValue1 );
+stdout.put( "Feed Me X: " );
+stdin.get( iValue2 );
+stdout.put( "Feed Me Y: " );
+stdin.get( iValue3 );
+stdout.put( "Feed Me Z: " );
+stdin.get( iValue4 );
+push( iValue1 );
+push( iValue2 );
+push( iValue3 );
+push( iValue4 );
+call max; 
+cmp(AL, 1);
+je ISDIVISIBLE;
+jmp NOTDIVISIBLE;
+
+    ISDIVISIBLE:
+		stdout.put("Same. AL = 1",nl);
+		jmp EndProgram;
+	NOTDIVISIBLE:
+  		stdout.put("Not the same. AL = 0",nl);
+		jmp EndProgram;
+stdout.newln();
+
+EndProgram:
+
+end assig;
