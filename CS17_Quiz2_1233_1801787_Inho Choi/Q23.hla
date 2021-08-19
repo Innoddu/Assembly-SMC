@@ -1,0 +1,74 @@
+// File: Q23
+program Q23;
+#include( "stdlib.hhf" );
+static
+iValue1 : int8 := 0;
+n : int8 := 0;
+
+procedure summing( value: int8); @nodisplay; @noframe;
+static
+iReturnAddress : dword;
+sum : int8;
+iTemporary : int16;
+iRegisterValue : dword;
+
+
+begin summing;
+mov( EBX, iRegisterValue );
+pop( iReturnAddress );
+pop( iTemporary );
+pop( iTemporary );
+mov( iTemporary, AX );
+mov( AL, value );
+
+push( iReturnAddress );
+push( iRegisterValue );
+
+mov(0,sum);
+mov(value,BH);
+mov(value,DH);
+mov(1,CH);
+
+forLoop:
+forLoopInit:
+mov(sum, AH);
+and(%0000_1111, DH);
+forLoopTerminationCondition:
+cmp( DH, 0 ); 
+je forLoopEnd; 
+forLoopBody:
+add( BH, AH ); 
+sub( CH ,BH);
+forLoopDecrement:
+dec(DH);
+jmp forLoopTerminationCondition;
+forLoopEnd:
+
+pop( EBX );
+
+
+
+ret();
+end summing;
+
+begin Q23;
+stdout.put( "Provide a number: " );
+stdin.get( iValue1 );
+
+mov( 0, BX );
+mov( iValue1, BL );
+push( BX );
+mov( 0, BX );
+push( BX );
+
+call summing; 
+
+stdout.put( "Summing( " );
+stdout.puti8( iValue1 );
+stdout.put( ") equals " );
+stdout.puti8( AH );
+stdout.put( "!" );
+
+
+stdout.newln();
+end Q23;

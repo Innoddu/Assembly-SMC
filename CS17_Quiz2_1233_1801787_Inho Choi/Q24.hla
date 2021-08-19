@@ -1,0 +1,156 @@
+// File: Q24
+program Q24;
+#include( "stdlib.hhf" );
+static
+iValue1 : int8 := 0;
+iValue2 : int8 := 0;
+iValue3 : int8 := 0;
+iValue4 : int8 := 0;
+n : int8 := 0;
+
+procedure largest( value1 : int8; value2 : int8; value3 : int8; value4 : int8); @nodisplay; @noframe;
+static
+iReturnAddress : dword;
+large : int8;
+iTemporary : int16;
+iRegisterValue : dword;
+
+begin largest;
+mov( EBX, iRegisterValue );
+pop( iReturnAddress );
+pop( iTemporary );
+
+pop( iTemporary ); // this is c
+mov( iTemporary, BX );
+mov( BL, value4 );
+
+pop( iTemporary ); // this is c
+mov( iTemporary, BX );
+mov( BL, value3 );
+
+pop( iTemporary ); // this is c
+mov( iTemporary, BX );
+mov( BL, value2 );
+
+pop( iTemporary ); // this is c
+mov( iTemporary, BX );
+mov( BL, value1 );
+
+push( iReturnAddress );
+push( iRegisterValue );
+
+mov(value1, AH);
+sub( value2, AH );
+cmp(AH,0);
+jg Aislarge;
+jmp Bislarge;
+
+Bislarge:
+mov(value2,AH);
+sub(value3,AH);
+cmp(AH,0);
+jg Bislarge2;
+jmp Cislarge;
+
+Cislarge:
+mov(value3,AH);
+sub(value4,AH);
+cmp(AH,0);
+jg CisInAH;
+jmp Dislarge;
+
+Dislarge:
+jmp DisInAH;
+
+
+Aislarge:
+mov(value1, AH);
+sub( value3, AH );
+cmp(AH,0);
+jg Aislarge2;
+jmp Cislarge;
+
+Aislarge2:
+mov(value1, AH);
+sub( value4, AH );
+cmp(AH,0);
+jg AisInAH;
+jmp Dislarge;
+
+
+
+Bislarge2:
+mov(value2,AH);
+sub(value4,AH);
+cmp(AH,0);
+jg BisInAH;
+jmp DisInAH;
+
+DisInAH:
+mov( value4, AH );
+jmp ExitSequence;
+
+CisInAH:
+mov( value3, AH );
+jmp ExitSequence;
+
+BisInAH:
+mov( value2, AH );
+jmp ExitSequence;
+
+AisInAH:
+mov( value1, AH );
+jmp ExitSequence;
+
+ExitSequence:
+pop(EBX);
+
+ret();
+end largest;
+
+begin Q24;
+
+stdout.put( "gimme a value1: " );
+stdin.get( iValue1 );
+stdout.put( "gimme a value2: " );
+stdin.get( iValue2 );
+stdout.put( "gimme a value3: " );
+stdin.get( iValue3 );
+stdout.put( "gimme a value4: " );
+stdin.get( iValue4 );
+
+mov( 0, BX );
+mov( iValue1, BL );
+push( BX );
+mov( 0, BX );
+mov( iValue2, BL );
+push( BX );
+mov( 0, BX );
+mov( iValue3, BL );
+push( BX );
+mov( 0, BX );
+mov( iValue4, BL );
+push( BX );
+mov( 0, BX );
+push( BX );
+
+
+call largest; 
+
+stdout.put( "largest( " );
+stdout.puti8( iValue1 );
+stdout.put( ", " );
+stdout.puti8( iValue2 );
+stdout.put( ", " );
+stdout.puti8( iValue3 );
+stdout.put( ", " );
+stdout.puti8( iValue4 );
+stdout.put( " )" );
+stdout.put( " equlas " );
+stdout.puti8( AH );
+stdout.put( "! " );
+
+
+
+stdout.newln();
+end Q24;
