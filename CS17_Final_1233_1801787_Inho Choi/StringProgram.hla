@@ -1,0 +1,130 @@
+program StringProgram;
+
+#include( "stdlib.hhf" );
+#include( "cs17Final.hla" );
+static stringData : dword;
+
+procedure getSmallest( stringData : dword ); @nodisplay; @noframe;
+static
+dReturnAddress : dword;
+dEAXRegister : dword := 0;
+dDXRegister : word := 0;  
+dCXRegister : word := 0;
+
+begin getSmallest;
+mov( EAX, dEAXRegister );
+mov( DX, dDXRegister );
+mov( CX, dCXRegister );
+pop( dReturnAddress );
+pop(EAX);
+push( dReturnAddress );
+push( dCXRegister );
+push( dDXRegister );
+push( dEAXRegister );
+
+mov([EAX+0],BL); //FISRT INDEX
+//stdout.put( "Strating BL:  " );
+//stdout.puti8( BL );
+//stdout.put( nl );
+
+PrintLoop:
+PrintLoopInit:
+mov( 0, DH );
+mov( 0, DL ); // DL is loop index i
+//mov([ebx],BL); //BL = stringData[0];
+PrintLoopTerminationClause:
+cmp( DL, [EAX] );
+jge PrintLoopEnd;
+PrintLoopBody:
+//stdout.put( "A[" );
+//stdout.puti8( DL );
+//stdout.put( "]=" );
+mov( [ EAX ], CH );
+//stdout.puti8( CH );
+//stdout.newln();
+cmp(CH,BL);
+jl input;
+jmp PrintLoopIncrement;
+
+input:
+mov(CH,BL);
+//stdout.put( "INPUT " );
+//stdout.puti8( BL );
+//stdout.put( nl );
+jmp PrintLoopIncrement;
+
+PrintLoopIncrement:
+inc( DL );
+inc( EAX );
+jmp PrintLoopTerminationClause;
+PrintLoopEnd:
+
+
+//stdout.put( "smalleset = " );
+//stdout.puti8(BL);
+//stdout.put( nl );
+
+//stdout.putc( [EAX] );
+//stdout.put( nl );
+//stdout.put( EAX );
+//stdout.put( nl );
+
+mov(BL,[EAX]);
+stdout.put( "Smallest : " );
+stdout.putc( [EAX] );
+stdout.newln();
+
+pop( EAX );
+mov(BL,[EAX]);
+pop( DX );
+pop( CX );
+ret();
+end getSmallest;
+
+ 
+begin StringProgram; 
+stdout.put( "Please enter a string to process", nl );
+
+mov( @size( int8 ), AL );
+mov( 80, BL );
+inc( BL );
+mul( BL );
+mov( 0, EBX );
+mov( AX, BX );
+malloc( EBX );
+mov( EAX, stringData );
+
+// let's try reading a value into the string
+mov( stringData, EAX );
+push( EAX );
+mov( 80, CX );
+push( CX );
+
+call gets;
+
+stdout.put( "----> here is the string you entered: " );
+
+mov( stringData, EAX );
+push( EAX );
+call puts;
+
+stdout.newln();
+mov( 0, EAX );
+
+
+mov( stringData, EAX );
+push( EAX );
+
+call getSmallest;
+
+stdout.put( "result=" );
+stdout.put( EAX );
+stdout.newln();
+stdout.put( "Character=" );
+stdout.putc( [EAX] );
+stdout.newln();
+
+
+free(stringData);
+end StringProgram;
+

@@ -1,0 +1,90 @@
+
+program isFactorProgram;
+ 
+#include( "stdlib.hhf" );
+static
+iValue: int16 :=0;
+iFactor: int16 :=0;
+iAnswer: int32 :=0;
+
+procedure isFactor(  value : int16;  desiredFactor : int16); @nodisplay; @noframe;
+static
+boolVal : boolean := false;
+dReturnAddress : dword;
+
+
+begin isFactor;
+
+pop(dReturnAddress);
+pop( desiredFactor );  //desiredFactor
+pop( value );  //value
+push(dReturnAddress);
+
+
+cmp(desiredFactor,0);
+jg PrintLoop;
+jmp no;
+
+no:
+jmp exitprogram;
+
+
+PrintLoop:
+PrintLoopInit:
+mov(0,DL);
+mov( value, bx );
+cmp(desiredFactor,0);
+jg PrintLoopBody;
+jmp PrintLoopEnd;
+PrintLoopTerminationClause:
+cmp( bx, 0 );
+jle PrintLoopEnd;
+PrintLoopBody:
+
+//stdout.put("loop?");
+//stdout.puti8(DL);
+//stdout.newln();
+
+sub( desiredFactor , bx);
+//stdout.puti16(bx);
+//stdout.put("-");
+//stdout.puti16(desiredFactor);
+//stdout.put("=");
+//stdout.puti16(bx);
+//stdout.newln();
+
+PrintLoopIncrement:
+inc(DL);
+jmp PrintLoopTerminationClause;
+PrintLoopEnd:
+
+cmp(bx,0);
+je inputresult;
+jmp inputfalse;
+
+inputresult:
+mov( 1, EAX );			
+jmp exitprogram;
+
+inputfalse:
+mov( 0, EAX );			
+jmp exitprogram;
+
+
+exitprogram:
+ret();
+end isFactor;
+
+begin isFactorProgram;
+mov(16,iValue);
+mov(7,iFactor);
+push( iValue );
+push(iFactor);
+
+call isFactor;
+
+mov(EAX,iAnswer);
+stdout.put(iAnswer);
+stdout.newln();
+
+end isFactorProgram;
