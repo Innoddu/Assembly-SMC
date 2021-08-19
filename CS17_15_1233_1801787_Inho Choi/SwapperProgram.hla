@@ -1,0 +1,131 @@
+// File: SwapperProgram
+program SwapperProgram;
+#include( "stdlib.hhf" );
+
+static
+iValue1 : int16 := 0; // the user data
+iValue2 : int16 := 0;
+iValue3 : int16 := 0;
+
+
+procedure swapper( var x : int16; var y : int16; var z : int16 ); @nodisplay; @noframe;
+
+static
+dReturnAddress : dword;
+iTemporary : int16;
+
+dEDXRegister : dword := 0; // preserve EDX
+dECXRegister : dword := 0; // preserve ECX
+dEBXRegister : dword := 0; // preserve EBX
+dEDIRegister : dword := 0; //
+Boolflag : boolean  := true;
+
+begin swapper;
+// entry sequence
+// preserve registers
+mov( EBX, dEBXRegister );
+mov( ECX, dECXRegister );
+mov( EDX, dEDXRegister );
+mov( EDI, dEDIRegister );
+
+pop( dReturnAddress ); // This is the return address
+
+pop( EDX ); // This is the address of Z
+pop( EBX ); // This is the address of y
+pop( ECX ); // This is the address of x
+
+push( dReturnAddress );
+push( dEDIRegister );
+push( dEDXRegister );
+push( dECXRegister );
+push( dEBXRegister );
+
+cmp(EBX,ECX); // compare x to y
+jge Xisgrater;
+jmp Yisgrater;
+
+
+Xisgrater:
+mov(1,Boolflag);
+mov( [EBX], EDI ); // EAX = y
+mov( DI, iTemporary ); // temporary = y
+mov( [ECX], EDI ); // EAX = x
+mov( DI, [EBX] ); // y = x
+mov( iTemporary, DI ); // EAX = y
+mov( DI, [ECX] ); // x = temporary
+cmp(DI,[EDX]); // compare y to z
+jge Yisgrater2;
+jmp Zisgrater2;
+
+Zisgrater2:
+jmp exitprogram;
+
+
+
+Yisgrater2:
+mov(1,Boolflag);
+mov( [EDX], EDI ); // EDX = Z
+mov( DI, iTemporary ); // temporary = Z
+mov( [EBX], EDI ); // EDX = Y
+mov( DI, [EDX] ); // Y = Z
+mov( iTemporary, DI ); // EDX = Z
+mov( DI, [EBX] ); // Y = temporary
+cmp([EBX],EDI);
+jge Xisgrater2;
+jmp exitprogram;
+
+
+Xisgrater2:
+mov(1,Boolflag);
+mov( [EBX], EDI ); // EAX = y
+mov( DI, iTemporary ); // temporary = y
+mov( [ECX], EDI ); // EAX = x
+mov( DI, [EBX] ); // y = x
+mov( iTemporary, DI ); // EAX = y
+mov( DI, [ECX] ); // x = temporary
+cmp(DI,[EDX]); // compare y to z
+jmp exitprogram;
+
+
+Yisgrater: //compare y to z;
+cmp(EDX,EBX);
+jge Yisgrater2;
+jmp Zisgrater;
+
+
+Zisgrater:
+jmp exitprogram;
+
+
+
+exitprogram:
+pop( EDX );
+pop( EBX );
+pop( ECX );
+pop(EDI);
+mov(Boolflag,AL);
+ret( );
+end swapper;
+
+begin SwapperProgram;
+stdout.put( "Gimme X: " );
+stdin.get( iValue1 );
+stdout.put( "Gimme Y: " );
+stdin.get( iValue2 );
+stdout.put( "Gimme Z: " );
+stdin.get( iValue3 );
+
+
+lea( EAX, iValue1 ); // get address of iValue1
+push( EAX );
+lea( EAX, iValue2 ); // get address of iValue2
+push( EAX );
+lea( EAX, iValue3 ); // get address of iValue3
+push( EAX );
+call swapper;
+stdout.put( "After sorting, X = " ,iValue1 ,", y = ", iValue2, ", Z = ", iValue3, nl );
+
+
+
+
+end SwapperProgram;

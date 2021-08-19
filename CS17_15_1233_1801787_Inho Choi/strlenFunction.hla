@@ -1,0 +1,64 @@
+// File: strlenFunction.hla
+program strlenFunction;
+#include( "stdlib.hhf" );
+#include( "cs17string.hla" );
+const
+nullchar : byte := 0;
+static
+
+baseStringAddress : dword := 0; 
+stringData : byte[27] := ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
+ 'o','p','q','r','s','t','u','v','w','x','y','z','0'];
+stringDataLen : uns16 := 26;
+
+procedure strlen( baseStringAddress: dword ); @nodisplay; @noframe; 
+static
+  dReturnAddress : dword;
+
+  wDXRegister  : word  := 0;   // preserve AX
+  dEBXRegister : dword := 0;   // preserve EBX
+begin strlen;
+  mov( EBX, dEBXRegister );
+  mov( DX, wDXRegister );
+  pop( dReturnAddress );   // This is the return address 
+  pop( EBX );              // This is the base address of the string
+  // push back the return address
+  push( dReturnAddress );
+  // preserve registers
+  push( dEBXRegister );
+  push( wDXRegister );
+
+  mov( 0, DX );            
+  mov(0,AL);
+  putsRepeatLoop:
+     cmp( [ EBX ], DH );
+     je putsEndLoop;
+     //stdout.putc( [ EBX ] );
+     inc( EBX );
+	 inc(AL);
+     jmp putsRepeatLoop;
+  putsEndLoop:
+
+  pop( DX );
+  pop( EBX );
+
+ret( );
+end strlen;
+
+
+
+begin strlenFunction;
+
+stdout.put( "Feed Me: " );
+mov( &stringData, EAX );
+push( EAX );
+push( stringDataLen );
+call gets;
+//stdout.put( nl );
+stdout.put( "The String You Entered: asdfasdf Has Length =  " );
+mov( &stringData, EAX );
+push( EAX );
+call strlen;
+stdout.puti8(AL);
+
+end strlenFunction;
